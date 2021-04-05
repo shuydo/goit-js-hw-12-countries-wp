@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HW 12</title>
+
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <template>
+      <div class="discription">
+        <div class="text">
+          <h1>Имя: {{name}}</h1>
+
+          <h2>Capital: {{capital}}</h2>
+
+          <h2>Population: {{population}}</h2>
+
+          <h2>Languages:</h2>
+          <ul>
+            {{#each langus}}
+            <li class="list-group-item">{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <div class="flag">
+          <img src="{{flag}}" alt="flag" />
+        </div>
+      </div>
+    </template>
+
+    <form class="form-inline search-form js-search-form">
+      <div class="form-group">
+        <input type="text" class="form-control" name="query" />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Искать</button>
+    </form>
+    <div class="js-card-container"></div>
+
+    <!-- <p class="js-output">Кол-во вызовов onInputChange: 0</p> -->
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/debounce.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <!-- <script src="./api-service.js" type="module"></script> -->
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>
+<!-- https://cdn.jsdelivr.net/npm/lodash@4.17.21/debounce.min.js -->
