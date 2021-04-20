@@ -11,27 +11,26 @@ const refs = getRefs();
 const _ = require('lodash');
 
 let query = '';
+// let countries = [];
 let filterCountries = [];
+let filterCountriesNames = [];
 let filterCountriesNamesLC = [];
 
 refs.searchForm.addEventListener('input', _.debounce(onInputChange, 500));
 refs.searchForm.addEventListener('submit', evt => {
   evt.preventDefault();
+  // console.log('sabmit');
   if (filterCountriesNamesLC.includes(query))
     renderCountrie(filterCountries[filterCountriesNamesLC.indexOf(query)]);
 });
 
 function onInputChange(evt) {
-  if (evt.target.value.toLowerCase().trim().includes(query) && query) {
-    query = evt.target.value.toLowerCase().trim();
-    return analyse(filterCountries);
-  }
-  console.clear();
   query = evt.target.value.toLowerCase().trim();
   API.fetchCountries(query).then(analyse).catch(onFetchError);
 }
 
 function analyse(resp) {
+  console.clear();
   console.table(`${resp.length} - matches`);
 
   if (resp.length === 1 && query.includes(' ')) return renderCountrie(resp[0]);
@@ -45,9 +44,21 @@ function analyse(resp) {
   if (filterCountries.length === 1) {
     return renderCountrie(filterCountries[0]);
   }
-  if (!_.isArray(resp) || !filterCountries.length) return onFetchError();
+  // if (resp.length < 11) {
+  // countries = [...resp];
+  // filterCountries = countries.filter(arr =>
+  //   checkInclude(arr.name.toLowerCase(), query),
+  // );
+  // }
+
   if (filterCountries.length > 10) return notify();
   if (filterCountries.length > 1) return moreOne();
+
+  if (!_.isArray(resp) || !filterCountries.length) return onFetchError();
+  // 1. от введения следующей буквы, которой нет ни в одной из стран на экране
+  // 2. от случая, когда фильтация убрала все страны отобранные BACKом
+  // (но сюда также подпадает ситуация, когда запрос содержит пробелы)
+  console.log('WFWFWFWFWFWFWFWFWFWFWFWFWFWFWFWFWF');
 }
 
 function renderCountrie(countrie) {
@@ -55,16 +66,28 @@ function renderCountrie(countrie) {
 }
 
 function moreOne() {
-  const filterCountriesNames = filterCountries.map(arr => arr.name);
+  // if (!(countries.length === filterCountries.length))
+
+  if (!filterCountries.length) onFetchError();
+
+  if (filterCountries.length === 1) {
+    return renderCountrie(filterCountries[0]);
+  }
+
+  filterCountriesNames = filterCountries.map(arr => arr.name);
   filterCountriesNamesLC = filterCountriesNames.map(el => el.toLowerCase());
 
-  error('If search Countrie in answer, press Enter.');
+  if (filterCountries.length)
+    error('If search Countrie in response, press Enter.');
   refs.cardContainer.innerHTML = countriesTempl(filterCountriesNames);
 }
 
 function notify() {
   refs.cardContainer.innerHTML = '';
-  error('Too many matches found. Please enter a more specific query!');
+
+  error({
+    text: 'Too many matches found. Please enter a more specific query!',
+  });
 }
 
 function onFetchError() {
@@ -74,7 +97,7 @@ function onFetchError() {
 }
 
 function checkInclude(countrie, query) {
-  // (boolean) проверяет есть ли страна, включающая набор букв в поле ввода
+  // boolean - проверяет есть ли страна, включающая набор букв в поле ввода
   return countrie
     .split(' ')
     .map(el => {
@@ -82,3 +105,13 @@ function checkInclude(countrie, query) {
     })
     .includes(query);
 }
+
+// function renderCountrieByName(name) {
+//   console.log(filterCountriesNames.indexOf(name));
+
+//   renderCountrie(filterCountries[filterCountriesNames.indexOf(name)]);
+// }
+
+// function checkCountrieInclude(arr, query) {
+//   arr.includes(query);
+// }
